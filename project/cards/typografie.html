@@ -1,0 +1,47 @@
+<!-- @dsCard group="Type" viewport="880x640" name="Typografie" subtitle="Archivo (Display + Body) · IBM Plex Mono (Daten)" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Typografie</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+body { padding: 32px; }
+.spec { display: grid; gap: 28px; max-width: 780px; }
+.row { display: grid; gap: 8px; border-top: 1.5px solid var(--line); padding-top: 16px; }
+.row:first-child { border-top: none; padding-top: 0; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.display-xl { font-size: 64px; }
+.heading-xl { font-size: 32px; margin: 0; }
+.body-text { font-size: 16px; max-width: 620px; margin: 0; }
+.data-line { font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+.data-line strong { color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="spec">
+  <div class="row">
+    <span class="tag">Display · Archivo 900 · Stretch 125 % · Uppercase · nur H1/H2 + große Zahlen</span>
+    <div class="mz-display display-xl">Muscle&shy;zone</div>
+  </div>
+  <div class="row">
+    <span class="tag">Heading · Archivo 800 · Stretch 110 %</span>
+    <h2 class="mz-heading heading-xl">Punkte sammeln. Im Shop und im Laden.</h2>
+  </div>
+  <div class="row">
+    <span class="tag">Body · Archivo 400–600 · 16 px / 1.5</span>
+    <p class="body-text">Heute bestellt, Montag da — oder heute ab 14 Uhr im Laden in Wien abholbar. Für jeden Einkauf sammelst du Punkte, egal ob online oder vor Ort.</p>
+  </div>
+  <div class="row">
+    <span class="tag">Utility · IBM Plex Mono · ausschließlich für Werte, Preise, Labels</span>
+    <span class="data-line">24 g Protein <strong>·</strong> 1,12 €/Portion <strong>·</strong> Noch 120 Punkte bis 5 € Rabatt</span>
+  </div>
+</div>
+</body>
+</html>

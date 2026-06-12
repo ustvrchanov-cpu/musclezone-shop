@@ -1,0 +1,37 @@
+<!-- @dsCard group="Components" viewport="680x480" name="Input" subtitle="Label · Hint · Fehler" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Input</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body { padding: 24px; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Input, Button } = window.MuscleZoneDesignSystem_e8992e;
+
+function Demo() {
+  return (
+    <div style={{ display: 'grid', gap: 20, maxWidth: 420 }}>
+      <Input id="email" label="E-Mail" type="email" placeholder="du@beispiel.at" autoComplete="email" required hint="Für Bestellbestätigung und Punktestand" />
+      <Input id="plz" label="PLZ" placeholder="1010" error="Bitte gib eine gültige österreichische PLZ ein" />
+      <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
+        <div style={{ flex: 1 }}>
+          <Input id="code" label="Rabatt-Code" placeholder="ZONE10" />
+        </div>
+        <Button variant="ghost">Einlösen</Button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

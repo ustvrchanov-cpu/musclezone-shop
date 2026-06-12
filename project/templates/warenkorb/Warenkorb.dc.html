@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Warenkorb" description="Warenkorb: Positionsliste mit Mengen-Stepper & Entfernen, Gratisversand-Balken, Rabatt-Code, Cross-Sell, mitlaufende Zusammenfassung mit Express-Checkout & Punkten — passend zur Startseite" -->
+<helmet>
+<script src="./ds-base.js"></script>
+<style>
+  body { margin: 0; background: var(--bg); color: var(--ink); }
+  .tpl-wrap { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+
+  /* ===== Shared chrome ===== */
+  .tpl-topbar { background: var(--accent); color: var(--on-accent); }
+  .tpl-ticker { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+  .tpl-topbar .tpl-ticker { padding: 9px 0; font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+  .tpl-ticker-track { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; }
+  .tpl-ticker-track span { display: inline-flex; align-items: center; gap: 18px; padding: 0 18px; }
+  .tpl-ticker-track i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .6; flex: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .tpl-ticker-track { animation: tpl-marquee 32s linear infinite; }
+    .tpl-ticker:hover .tpl-ticker-track { animation-play-state: paused; }
+  }
+  @keyframes tpl-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .tpl-header { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--bg) 86%, transparent); backdrop-filter: blur(10px); border-bottom: 1.5px solid var(--line); }
+  .tpl-header .tpl-wrap { display: flex; align-items: center; gap: 16px; height: 66px; }
+  .tpl-logo { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); }
+  .tpl-logo img { width: 30px; height: 30px; border-radius: 5px; display: block; }
+  .tpl-logo span { font-family: var(--font-display); font-stretch: 125%; font-weight: 900; font-size: 21px; letter-spacing: -0.01em; text-transform: uppercase; }
+  .tpl-nav { display: flex; gap: 2px; margin-left: 10px; }
+  .tpl-nav a { font-weight: 600; font-size: 14px; color: var(--ink); text-decoration: none; padding: 9px 12px; border-radius: 8px; line-height: 1; }
+  .tpl-nav a:hover { background: var(--surface-2); }
+  .tpl-nav a[data-sale] { color: var(--accent); }
+  .tpl-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .tpl-points { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 999px; padding: 7px 12px; white-space: nowrap; }
+  .tpl-points b { font-weight: 600; }
+  .tpl-icon { width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: border-color 0.15s, background-color 0.15s; }
+  .tpl-icon:hover { border-color: var(--ink); background: var(--surface-2); }
+  .tpl-badge-count { position: absolute; top: -6px; right: -6px; min-width: 19px; height: 19px; padding: 0 4px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-family: var(--font-mono); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+  .tpl-menu-btn { display: none; }
+  .tpl-placeholder { position: absolute; inset: 0; display: grid; place-items: center; background: repeating-linear-gradient(45deg, transparent 0 11px, color-mix(in oklab, var(--ink) 6%, transparent) 11px 22px); }
+  .tpl-placeholder span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); }
+
+  /* ===== Cart head ===== */
+  .cart-head { padding: 32px 0 8px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .cart-h1 { font-family: var(--font-display); font-stretch: 120%; font-weight: 900; text-transform: uppercase; line-height: 1; letter-spacing: -0.01em; font-size: clamp(30px, 4.6vw, 52px); margin: 0; }
+  .cart-count { font-family: var(--font-mono); font-size: 13px; color: var(--ink-muted); }
+  .cart-back { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); text-decoration: none; margin-left: auto; border-bottom: 1.5px solid var(--line); padding-bottom: 3px; }
+  .cart-back:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ===== Layout ===== */
+  .cart-main { display: grid; grid-template-columns: 1fr 380px; gap: 32px; padding: 20px 0 72px; align-items: start; }
+
+  /* Shipping bar */
+  .cart-ship { border: 1.5px solid var(--line); border-radius: var(--radius-lg); padding: 18px 20px; background: var(--surface); margin-bottom: 18px; display: flex; flex-direction: column; gap: 11px; }
+  .cart-ship-top { display: flex; align-items: center; gap: 11px; font-size: 14px; }
+  .cart-ship-top svg { flex: none; color: var(--accent); }
+  .cart-ship-top[data-done="true"] svg { color: var(--success); }
+  .cart-ship-top b { font-weight: 600; }
+  .cart-ship-top .accent { color: var(--accent); }
+  .cart-ship-track { height: 8px; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .cart-ship-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .4s cubic-bezier(.2,.7,.2,1); }
+  .cart-ship-fill[data-done="true"] { background: var(--success); }
+
+  /* Line items */
+  .cart-items { border: 1.5px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+  .cart-item { display: grid; grid-template-columns: 92px 1fr auto; gap: 16px; padding: 18px; border-bottom: 1.5px solid var(--line); align-items: start; }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item-media { position: relative; aspect-ratio: 1/1; border: 1.5px solid var(--line); border-radius: var(--radius-md); overflow: hidden; background: var(--surface-2); }
+  .cart-item-mid { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .cart-item-brand { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+  .cart-item-name { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; text-transform: uppercase; font-size: 17px; line-height: 1.15; margin: 0; }
+  .cart-item-var { display: flex; flex-wrap: wrap; gap: 4px 6px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); }
+  .cart-item-var > span + span::before { content: "·"; color: var(--accent); font-weight: 700; margin-right: 6px; }
+  .cart-item-avail { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 12px; color: var(--success); margin-top: 2px; }
+  .cart-item-avail .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); flex: none; }
+  .cart-item-actions { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+  .cart-stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+  .cart-stepper button { width: 38px; height: 40px; border: none; background: var(--surface); color: var(--ink); font-size: 19px; cursor: pointer; display: grid; place-items: center; }
+  .cart-stepper button:hover { background: var(--surface-2); }
+  .cart-stepper span { min-width: 38px; text-align: center; font-family: var(--font-mono); font-size: 15px; font-weight: 600; }
+  .cart-remove { background: none; border: none; cursor: pointer; color: var(--ink-muted); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; padding: 6px 4px; }
+  .cart-remove:hover { color: var(--accent); }
+  .cart-item-right { text-align: right; display: flex; flex-direction: column; gap: 4px; white-space: nowrap; }
+  .cart-item-price { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; font-size: 19px; }
+  .cart-item-unit { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); }
+
+  /* Cross-sell */
+  .cart-cross { margin-top: 24px; }
+  .cart-cross h2 { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; text-transform: uppercase; font-size: 19px; margin: 0 0 14px; }
+  .cart-cross-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+  .cart-cross-card { flex: 0 0 240px; display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; border: 1.5px solid var(--line); border-radius: var(--radius-lg); padding: 12px; background: var(--surface); }
+  .cart-cross-media { position: relative; aspect-ratio: 1/1; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-2); }
+  .cart-cross-info { min-width: 0; }
+  .cart-cross-info .n { font-weight: 600; font-size: 13px; line-height: 1.2; }
+  .cart-cross-info .p { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+
+  /* Summary */
+  .cart-aside { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 14px; }
+  .cart-sum { border: 1.5px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+  .cart-sum h2 { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; text-transform: uppercase; font-size: 18px; margin: 0; }
+  .cart-discount { display: flex; gap: 8px; }
+  .cart-discount .mz-input { height: 44px; }
+  .cart-disc-applied { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-family: var(--font-mono); font-size: 12px; color: var(--success); border: 1.5px dashed var(--success); border-radius: var(--radius-md); padding: 9px 12px; }
+  .cart-disc-applied button { background: none; border: none; color: var(--ink-muted); cursor: pointer; font-family: var(--font-mono); font-size: 12px; text-decoration: underline; }
+  .cart-rows { display: flex; flex-direction: column; gap: 10px; }
+  .cart-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 14px; }
+  .cart-row .k { color: var(--ink-muted); }
+  .cart-row .v { font-family: var(--font-mono); font-weight: 500; }
+  .cart-row[data-free="true"] .v { color: var(--success); }
+  .cart-row.disc .v { color: var(--accent); }
+  .cart-total { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1.5px solid var(--line); }
+  .cart-total .k { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; text-transform: uppercase; font-size: 17px; }
+  .cart-total .v { font-family: var(--font-display); font-stretch: 115%; font-weight: 900; font-size: 28px; }
+  .cart-total .tax { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); font-weight: 400; text-align: right; margin-top: 2px; }
+  .cart-points { display: flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .cart-checkout-note { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); text-align: center; }
+  .cart-express { display: flex; flex-direction: column; gap: 8px; }
+  .cart-pay-btn { height: 48px; border-radius: var(--radius-md); border: 1.5px solid var(--line); background: var(--ink); color: var(--bg); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .cart-pay-btn:hover { opacity: .9; }
+  .cart-pay-btn.gpay { background: var(--surface); color: var(--ink); }
+  .cart-express-sep { display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+  .cart-express-sep::before, .cart-express-sep::after { content: ""; flex: 1; height: 1.5px; background: var(--line); }
+  .cart-trust { display: flex; flex-wrap: wrap; gap: 7px; }
+  .cart-trust span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); border: 1.5px solid var(--line); border-radius: 5px; padding: 5px 8px; }
+  .cart-assur { display: flex; flex-direction: column; gap: 9px; padding: 16px 18px; border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
+  .cart-assur-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-muted); }
+  .cart-assur-row svg { flex: none; color: var(--success); }
+  .cart-assur-row b { color: var(--ink); font-weight: 600; }
+
+  /* Footer */
+  .tpl-footer { border-top: 1.5px solid var(--line); background: var(--surface); }
+  .tpl-footer .tpl-wrap { padding-top: 48px; padding-bottom: 32px; }
+  .tpl-foot-cols { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; }
+  .tpl-foot-brand .tpl-logo { margin-bottom: 12px; }
+  .tpl-foot-brand p { color: var(--ink-muted); font-size: 13px; max-width: 30ch; margin: 0; line-height: 1.6; }
+  .tpl-foot-col h4 { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 14px; }
+  .tpl-foot-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .tpl-foot-col a { color: var(--ink); text-decoration: none; font-size: 14px; }
+  .tpl-foot-col a:hover { color: var(--accent); }
+  .tpl-pay { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 28px; }
+  .tpl-pay span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); border: 1.5px solid var(--line); border-radius: 5px; padding: 6px 9px; }
+  .tpl-foot-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 32px; padding-top: 20px; border-top: 1.5px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); letter-spacing: 0.03em; }
+  .tpl-foot-bottom nav { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .tpl-foot-bottom a { color: var(--ink-muted); text-decoration: none; }
+  .tpl-foot-bottom a:hover { color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .cart-main { grid-template-columns: 1fr; gap: 24px; }
+    .cart-aside { position: static; }
+    .tpl-foot-cols { grid-template-columns: 1fr 1fr; gap: 28px; }
+  }
+  @media (max-width: 820px) {
+    .tpl-nav, .tpl-points { display: none; }
+    .tpl-menu-btn { display: inline-flex; }
+  }
+  @media (max-width: 540px) {
+    .cart-item { grid-template-columns: 72px 1fr; }
+    .cart-item-right { grid-column: 2; align-items: flex-start; text-align: left; flex-direction: row; gap: 10px; }
+    .tpl-foot-cols { grid-template-columns: 1fr; gap: 24px; }
+    .tpl-wrap { padding: 0 18px; }
+  }
+</style>
+</helmet>
+
+<div data-screen-label="Warenkorb">
+
+  <div class="tpl-topbar">
+    <div class="tpl-ticker" aria-hidden="true">
+      <div class="tpl-ticker-track">
+        <span>Gratisversand ab 49 €<i></i></span>
+        <span>Heute bestellt, Montag da<i></i></span>
+        <span>Abholbar in Wien<i></i></span>
+        <span>1 Punkt je 1 € — online &amp; im Laden<i></i></span>
+        <span>Über 200 Produkte<i></i></span>
+        <span>Geprüfte Qualität<i></i></span>
+        <span>Gratisversand ab 49 €<i></i></span>
+        <span>Heute bestellt, Montag da<i></i></span>
+        <span>Abholbar in Wien<i></i></span>
+        <span>1 Punkt je 1 € — online &amp; im Laden<i></i></span>
+        <span>Über 200 Produkte<i></i></span>
+        <span>Geprüfte Qualität<i></i></span>
+      </div>
+    </div>
+  </div>
+
+  <header class="tpl-header">
+    <div class="tpl-wrap">
+      <a class="tpl-logo" href="../startseite/Startseite.dc.html">
+        <img src="../../assets/logo.png" alt="MuscleZone">
+        <span>Musclezone</span>
+      </a>
+      <nav class="tpl-nav">
+        <a href="#">Proteine</a>
+        <a href="#">Creatin</a>
+        <a href="#">Pre-Workout</a>
+        <a href="../wiki/Wiki.dc.html">Wiki</a>
+        <a href="#" data-sale="true">Sale</a>
+      </nav>
+      <div class="tpl-actions">
+        <span class="tpl-points"><b>Noch 120 Punkte</b> bis 5 € Rabatt</span>
+        <button class="tpl-icon" type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" title="{{ themeAria }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 14.2A7 7 0 1 1 9.6 4.2 5.6 5.6 0 0 0 20 14.2z"></path></svg>
+        </button>
+        <button class="tpl-icon" type="button" aria-label="Konto">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8.2" r="3.4"></circle><path d="M5.5 19.2a6.5 6.5 0 0 1 13 0"></path></svg>
+        </button>
+        <button class="tpl-icon" type="button" aria-label="Warenkorb" style="border-color: var(--accent); color: var(--accent);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1.1 11.2H7.1L6 8z"></path><path d="M9 8.4V6.4a3 3 0 0 1 6 0v2"></path></svg>
+          <span class="tpl-badge-count">{{ itemCount }}</span>
+        </button>
+        <button class="tpl-icon tpl-menu-btn" type="button" aria-label="Menü">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="tpl-wrap">
+
+    <div class="cart-head">
+      <h1 class="cart-h1">Warenkorb</h1>
+      <span class="cart-count">{{ itemCount }} Artikel</span>
+      <a class="cart-back" href="../startseite/Startseite.dc.html">Weiter einkaufen</a>
+    </div>
+
+    <div class="cart-main">
+      <!-- Left -->
+      <div class="cart-left">
+        <div class="cart-ship">
+          <div class="cart-ship-top" data-done="{{ shipDone }}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13V7h11v10H3z"></path><path d="M14 9h4l3 3v5h-7"></path><circle cx="7" cy="18" r="1.6"></circle><circle cx="17" cy="18" r="1.6"></circle></svg>
+            <span>{{ shipMsg }}</span>
+          </div>
+          <div class="cart-ship-track"><div class="cart-ship-fill" data-done="{{ shipDone }}" style="width: {{ shipPct }}"></div></div>
+        </div>
+
+        <div class="cart-items">
+          <sc-for list="{{ items }}" as="it" hint-placeholder-count="3">
+            <div class="cart-item">
+              <div class="cart-item-media"><div class="tpl-placeholder"><span>Packshot</span></div></div>
+              <div class="cart-item-mid">
+                <span class="cart-item-brand">{{ it.brand }}</span>
+                <h3 class="cart-item-name">{{ it.name }}</h3>
+                <div class="cart-item-var">
+                  <sc-for list="{{ it.variant }}" as="v" hint-placeholder-count="2">
+                    <span>{{ v }}</span>
+                  </sc-for>
+                </div>
+                <span class="cart-item-avail"><span class="dot"></span>{{ it.avail }}</span>
+                <div class="cart-item-actions">
+                  <div class="cart-stepper" role="group" aria-label="Menge">
+                    <button type="button" onClick="{{ it.dec }}" aria-label="Weniger">−</button>
+                    <span aria-live="polite">{{ it.qty }}</span>
+                    <button type="button" onClick="{{ it.inc }}" aria-label="Mehr">+</button>
+                  </div>
+                  <button class="cart-remove" type="button" onClick="{{ it.remove }}">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M10 7V5h4v2M9 7v11M15 7v11M6 7l1 13h10l1-13"></path></svg>
+                    Entfernen
+                  </button>
+                </div>
+              </div>
+              <div class="cart-item-right">
+                <span class="cart-item-price">{{ it.lineTotal }}</span>
+                <span class="cart-item-unit">{{ it.eachLabel }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="cart-cross">
+          <h2>Passt dazu</h2>
+          <div class="cart-cross-row">
+            <sc-for list="{{ cross }}" as="c" hint-placeholder-count="3">
+              <div class="cart-cross-card">
+                <div class="cart-cross-media"><div class="tpl-placeholder"><span>Pack</span></div></div>
+                <div class="cart-cross-info">
+                  <div class="n">{{ c.name }}</div>
+                  <div class="p">{{ c.price }}</div>
+                </div>
+                <button class="mz-btn mz-btn--primary mz-btn--icon" type="button" onClick="{{ c.add }}" aria-label="{{ c.addLabel }}">+</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: summary -->
+      <aside class="cart-aside">
+        <div class="cart-sum">
+          <h2>Zusammenfassung</h2>
+
+          <sc-if value="{{ discountApplied }}" hint-placeholder-val="{{ false }}">
+            <div class="cart-disc-applied">
+              <span>Code ZONE10 · −10 %</span>
+              <button type="button" onClick="{{ removeDiscount }}">Entfernen</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ discountOpen }}" hint-placeholder-val="{{ true }}">
+            <div class="cart-discount">
+              <input class="mz-input" type="text" placeholder="Rabatt-Code" aria-label="Rabatt-Code" value="{{ codeInput }}" onInput="{{ onCode }}">
+              <button class="mz-btn mz-btn--ghost mz-btn--md" type="button" onClick="{{ applyDiscount }}">Einlösen</button>
+            </div>
+          </sc-if>
+
+          <div class="cart-rows">
+            <div class="cart-row"><span class="k">Zwischensumme</span><span class="v">{{ subtotal }}</span></div>
+            <sc-if value="{{ discountApplied }}" hint-placeholder-val="{{ false }}">
+              <div class="cart-row disc"><span class="k">Rabatt (ZONE10)</span><span class="v">{{ discountAmount }}</span></div>
+            </sc-if>
+            <div class="cart-row" data-free="{{ shipDone }}"><span class="k">Versand</span><span class="v">{{ shipCost }}</span></div>
+          </div>
+
+          <div class="cart-total">
+            <span class="k">Gesamt</span>
+            <span style="text-align:right">
+              <span class="v">{{ total }}</span>
+              <span class="tax">inkl. 20 % USt.</span>
+            </span>
+          </div>
+
+          <div class="cart-points">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"></path></svg>
+            Du sammelst <b style="margin-left:4px">+{{ pointsEarn }} Punkte</b>
+          </div>
+
+          <button class="mz-btn mz-btn--primary mz-btn--lg" type="button" style="width:100%">Zur Kasse</button>
+          <p class="cart-checkout-note">Abholbar in Wien · Heute ab 14 Uhr</p>
+
+          <div class="cart-express-sep">oder express</div>
+          <div class="cart-express">
+            <button class="cart-pay-btn" type="button">Pay</button>
+            <button class="cart-pay-btn gpay" type="button">G Pay</button>
+          </div>
+        </div>
+
+        <div class="cart-assur">
+          <div class="cart-assur-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+            <span><b>Sicher zahlen</b> mit Mollie · SSL-verschlüsselt</span>
+          </div>
+          <div class="cart-assur-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path><path d="M3 21v-5h5"></path></svg>
+            <span><b>14 Tage Widerruf</b> bei ungeöffneter Ware</span>
+          </div>
+          <div class="cart-trust">
+            <span>EPS</span><span>Klarna</span><span>Visa</span><span>Mastercard</span><span>Apple Pay</span><span>G Pay</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="tpl-footer">
+    <div class="tpl-wrap">
+      <div class="tpl-foot-cols">
+        <div class="tpl-foot-brand">
+          <a class="tpl-logo" href="../startseite/Startseite.dc.html">
+            <img src="../../assets/logo.png" alt="MuscleZone">
+            <span>Musclezone</span>
+          </a>
+          <p>Dein Supplement-Store in Wien. Lokal geführt, online bestellbar — mit einem Punktekonto für beide Welten.</p>
+          <div class="tpl-pay">
+            <span>EPS</span><span>Klarna</span><span>Visa</span><span>Mastercard</span><span>Apple Pay</span><span>Google Pay</span>
+          </div>
+        </div>
+        <div class="tpl-foot-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="#">Proteine</a></li>
+            <li><a href="#">Creatin</a></li>
+            <li><a href="#">Pre-Workout</a></li>
+            <li><a href="#">Vitamine &amp; Mineralstoffe</a></li>
+            <li><a href="#">Sale</a></li>
+          </ul>
+        </div>
+        <div class="tpl-foot-col">
+          <h4>Service</h4>
+          <ul>
+            <li><a href="#">Mein Konto</a></li>
+            <li><a href="#">Bestellstatus</a></li>
+            <li><a href="#">Abholung in Wien</a></li>
+            <li><a href="#">Versand &amp; Lieferzeit</a></li>
+            <li><a href="#">Kontakt</a></li>
+          </ul>
+        </div>
+        <div class="tpl-foot-col">
+          <h4>Rechtliches</h4>
+          <ul>
+            <li><a href="#">Impressum</a></li>
+            <li><a href="#">AGB</a></li>
+            <li><a href="#">Datenschutz</a></li>
+            <li><a href="#">Widerruf &amp; Retoure</a></li>
+            <li><a href="#">Zahlung &amp; Sicherheit</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="tpl-foot-bottom">
+        <span>© 2026 MuscleZone e.U. · Wien · Alle Preise inkl. USt., zzgl. Versand</span>
+        <nav>
+          <a href="#">Impressum</a>
+          <a href="#">Datenschutz</a>
+          <a href="#">AGB</a>
+          <a href="#">Cookie-Einstellungen</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    theme: 'dark',
+    items: [
+      { id: 'whey', brand: 'Whey Protein', name: '100 % Whey · 1 kg', variant: ['Schoko', '1 kg'], avail: 'Heute ab 14 Uhr abholbar', price: 29.9, unitKg: 29.9, qty: 1 },
+      { id: 'crea', brand: 'Creatin', name: 'Monohydrat · 500 g', variant: ['Pur', '500 g'], avail: 'Heute bestellt, Montag da', price: 19.9, unitKg: 39.8, qty: 1 },
+      { id: 'bar', brand: 'Protein-Riegel', name: 'Cookie Dough · 12er', variant: ['12 Riegel'], avail: 'Heute ab 14 Uhr abholbar', price: 23.9, unitKg: null, qty: 1 },
+    ],
+    codeInput: '',
+    discountApplied: false,
+  };
+
+  componentDidMount() {
+    document.documentElement.setAttribute('data-theme', this.state.theme);
+  }
+
+  toggleTheme() {
+    this.setState(s => {
+      const theme = s.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      return { theme };
+    });
+  }
+
+  changeQty(id, d) {
+    this.setState(s => ({
+      items: s.items.map(it => it.id === id ? Object.assign({}, it, { qty: Math.max(1, it.qty + d) }) : it),
+    }));
+  }
+  removeItem(id) {
+    this.setState(s => ({ items: s.items.filter(it => it.id !== id) }));
+  }
+  applyDiscount() {
+    if (this.state.codeInput.trim().toUpperCase() === 'ZONE10') this.setState({ discountApplied: true });
+  }
+  removeDiscount() { this.setState({ discountApplied: false, codeInput: '' }); }
+
+  fmt(n) { return n.toLocaleString('de-AT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
+
+  renderVals() {
+    const THRESHOLD = 49;
+    const subtotalNum = this.state.items.reduce((a, it) => a + it.price * it.qty, 0);
+    const discountNum = this.state.discountApplied ? subtotalNum * 0.10 : 0;
+    const afterDisc = subtotalNum - discountNum;
+    const shipDone = afterDisc >= THRESHOLD || this.state.items.length === 0;
+    const shipCostNum = shipDone ? 0 : 4.9;
+    const totalNum = afterDisc + shipCostNum;
+    const remaining = Math.max(0, THRESHOLD - afterDisc);
+    const pct = Math.min(100, Math.round((afterDisc / THRESHOLD) * 100));
+
+    const items = this.state.items.map(it => ({
+      brand: it.brand, name: it.name, variant: it.variant, avail: it.avail, qty: it.qty,
+      lineTotal: this.fmt(it.price * it.qty),
+      eachLabel: it.qty > 1 ? (this.fmt(it.price) + ' / Stück') : (it.unitKg ? (this.fmt(it.unitKg) + ' / kg') : 'inkl. USt.'),
+      inc: () => this.changeQty(it.id, 1),
+      dec: () => this.changeQty(it.id, -1),
+      remove: () => this.removeItem(it.id),
+    }));
+
+    const cross = [
+      { name: 'MuscleZone Shaker 700 ml', price: '6,90 €', addLabel: 'Shaker hinzufügen', add: () => {} },
+      { name: 'Vitamin D3+K2 Tropfen', price: '14,90 €', addLabel: 'Vitamin D3 hinzufügen', add: () => {} },
+      { name: 'Magnesium Citrat 180 Kaps.', price: '12,90 €', addLabel: 'Magnesium hinzufügen', add: () => {} },
+    ];
+
+    return {
+      themeAria: this.state.theme === 'dark' ? 'Zu Hell wechseln' : 'Zu Dunkel wechseln',
+      toggleTheme: () => this.toggleTheme(),
+
+      items, cross,
+      itemCount: this.state.items.reduce((a, it) => a + it.qty, 0),
+
+      shipDone: shipDone ? 'true' : 'false',
+      shipPct: pct + '%',
+      shipMsg: shipDone ? 'Gratisversand gesichert ✓' : ('Noch ' + this.fmt(remaining) + ' bis Gratisversand'),
+      shipCost: shipDone ? 'Gratis' : this.fmt(shipCostNum),
+
+      discountOpen: !this.state.discountApplied,
+      discountApplied: this.state.discountApplied,
+      codeInput: this.state.codeInput,
+      onCode: (e) => this.setState({ codeInput: e.target.value }),
+      applyDiscount: () => this.applyDiscount(),
+      removeDiscount: () => this.removeDiscount(),
+
+      subtotal: this.fmt(subtotalNum),
+      discountAmount: '−' + this.fmt(discountNum),
+      total: this.fmt(totalNum),
+      pointsEarn: Math.round(afterDisc),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!-- @dsCard group="Components" viewport="760x520" name="Button" subtitle="Primary · Secondary · Ghost · Größen" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Button</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body { padding: 24px; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button } = window.MuscleZoneDesignSystem_e8992e;
+
+function Row({ label, children }) {
+  return (
+    <div style={{ display: 'grid', gap: 10 }}>
+      <span className="mz-mono-label" style={{ color: 'var(--ink-muted)' }}>{label}</span>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>{children}</div>
+    </div>
+  );
+}
+
+function Demo() {
+  return (
+    <div style={{ display: 'grid', gap: 28 }}>
+      <Row label="Varianten">
+        <Button variant="primary">In den Warenkorb</Button>
+        <Button variant="secondary">Zur Kasse</Button>
+        <Button variant="ghost">Weiter einkaufen</Button>
+        <Button variant="primary" size="icon" ariaLabel="In den Warenkorb">+</Button>
+      </Row>
+      <Row label="Größen (Touch-Minimum 44 px)">
+        <Button variant="primary" size="sm">Anwenden</Button>
+        <Button variant="primary" size="md">In den Warenkorb</Button>
+        <Button variant="primary" size="lg">Jetzt kaufen</Button>
+      </Row>
+      <Row label="Zustände">
+        <Button variant="primary" disabled>Ausverkauft</Button>
+        <Button variant="ghost" disabled>Nicht verfügbar</Button>
+      </Row>
+      <div data-theme="light" style={{ background: 'var(--bg)', color: 'var(--ink)', padding: 20, borderRadius: 12, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span className="mz-mono-label" style={{ color: 'var(--ink-muted)', width: '100%' }}>Light Mode</span>
+        <Button variant="primary">In den Warenkorb</Button>
+        <Button variant="secondary">Zur Kasse</Button>
+        <Button variant="ghost">Weiter einkaufen</Button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

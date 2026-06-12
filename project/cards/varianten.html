@@ -1,0 +1,112 @@
+<!-- @dsCard group="Brand" viewport="1140x660" name="Design-Handschrift · 3 Varianten" subtitle="Entschieden: V2 Hart & Klar" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Design-Handschrift · 3 Varianten</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+body { padding: 28px; }
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1080px; }
+.col { display: grid; gap: 14px; align-content: start; }
+.col-head { display: grid; gap: 4px; min-height: 96px; }
+.v-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.v-name { margin: 0; font-family: var(--font-display); font-stretch: 110%; font-weight: 800; font-size: 20px; }
+.v-desc { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.demo-card { background: var(--surface); display: flex; flex-direction: column; overflow: hidden; }
+.demo-media { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); }
+.demo-body { padding: 16px; display: grid; gap: 8px; }
+.demo-brand { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
+.demo-name { margin: 0; font-family: var(--font-display); font-stretch: 110%; font-weight: 800; font-size: 17px; }
+.demo-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 8px; }
+.demo-price { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; font-size: 20px; display: block; }
+.demo-unit { font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); display: block; }
+
+/* V1 — Soft Retail */
+.v1 .demo-card { border: none; border-radius: 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4); }
+.v1 .demo-btn { border-radius: var(--radius-pill); }
+
+/* V2 — Hart & Klar (umgesetzt) */
+.v2 .demo-card { border: 1.5px solid var(--line); border-radius: var(--radius-lg); }
+.v2 .demo-card:hover { border-color: var(--ink); }
+.v2 .demo-btn { border-radius: var(--radius-md); }
+
+/* V3 — Ticket */
+.v3 .demo-card {
+  border: 1.5px solid var(--line);
+  border-radius: 2px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
+}
+.v3 .demo-footer { border-top: 1.5px dashed var(--line); padding-top: 12px; }
+.v3 .demo-btn { border-radius: 2px; }
+.v3 .demo-name { text-transform: uppercase; font-size: 15px; letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+<div class="cols">
+  <div class="col v1">
+    <div class="col-head">
+      <span class="v-tag">V1</span>
+      <h3 class="v-name">Soft Retail</h3>
+      <p class="v-desc">Große Radien, Schatten statt Rahmen, Pill-CTAs. Freundlich und vertraut — aber am nächsten an „Template“.</p>
+    </div>
+    <article class="demo-card">
+      <div class="demo-media"><div class="mz-placeholder"><span>PACKSHOT</span></div></div>
+      <div class="demo-body">
+        <span class="demo-brand">Whey Protein</span>
+        <h4 class="demo-name">Vanille · 1 kg</h4>
+        <div class="mz-strip"><span>24 g Protein</span><span class="mz-strip-dot" aria-hidden="true">·</span><span>1,12 €/Port.</span></div>
+        <div class="demo-footer">
+          <div><span class="demo-price">29,90 €</span><span class="demo-unit">29,90 € / kg</span></div>
+          <button type="button" class="mz-btn mz-btn--primary mz-btn--icon demo-btn" aria-label="In den Warenkorb">+</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="col v2">
+    <div class="col-head">
+      <span class="v-tag">V2 · Gewählt ✓ — so umgesetzt</span>
+      <h3 class="v-name">Hart &amp; Klar</h3>
+      <p class="v-desc">Sichtbare Rahmen, moderate Radien, flach. Passt zum Varsity-Logo: kantig, ehrlich, eigenständig — ohne Beton-Klischee.</p>
+    </div>
+    <article class="demo-card">
+      <div class="demo-media"><div class="mz-placeholder"><span>PACKSHOT</span></div></div>
+      <div class="demo-body">
+        <span class="demo-brand">Whey Protein</span>
+        <h4 class="demo-name">Vanille · 1 kg</h4>
+        <div class="mz-strip"><span>24 g Protein</span><span class="mz-strip-dot" aria-hidden="true">·</span><span>1,12 €/Port.</span></div>
+        <div class="demo-footer">
+          <div><span class="demo-price">29,90 €</span><span class="demo-unit">29,90 € / kg</span></div>
+          <button type="button" class="mz-btn mz-btn--primary mz-btn--icon demo-btn" aria-label="In den Warenkorb">+</button>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="col v3">
+    <div class="col-head">
+      <span class="v-tag">V3</span>
+      <h3 class="v-name">Ticket</h3>
+      <p class="v-desc">Gekappte Ecke, gestrichelte Trennung, Uppercase — wie ein Preisetikett aus dem Laden. Markant, aber Gimmick-Risiko.</p>
+    </div>
+    <article class="demo-card">
+      <div class="demo-media"><div class="mz-placeholder"><span>PACKSHOT</span></div></div>
+      <div class="demo-body">
+        <span class="demo-brand">Whey Protein</span>
+        <h4 class="demo-name">Vanille · 1 kg</h4>
+        <div class="mz-strip"><span>24 g Protein</span><span class="mz-strip-dot" aria-hidden="true">·</span><span>1,12 €/Port.</span></div>
+        <div class="demo-footer">
+          <div><span class="demo-price">29,90 €</span><span class="demo-unit">29,90 € / kg</span></div>
+          <button type="button" class="mz-btn mz-btn--primary mz-btn--icon demo-btn" aria-label="In den Warenkorb">+</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+</body>
+</html>

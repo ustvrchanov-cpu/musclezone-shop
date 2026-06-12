@@ -1,0 +1,46 @@
+<!-- @dsCard group="Components" viewport="760x640" name="Produktkarte" subtitle="Mit Grundpreis, Daten-Leiste & Stempel" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Produktkarte</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>body { padding: 24px; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { ProductCard } = window.MuscleZoneDesignSystem_e8992e;
+
+function Demo() {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 260px)', gap: 20 }}>
+      <ProductCard
+        brand="Whey Protein"
+        name="Vanille · 1 kg"
+        badge="Bestseller"
+        price="29,90 €"
+        unitPrice="29,90 € / kg"
+        data={['24 g Protein', '1,12 €/Port.']}
+        availability="Heute ab 14 Uhr abholbar"
+      />
+      <ProductCard
+        brand="Creatin"
+        name="Monohydrat · 500 g"
+        price="19,90 €"
+        unitPrice="39,80 € / kg"
+        data={['3,4 g/Port.', '0,12 €/Port.']}
+        availability="Heute bestellt, Montag da"
+      />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo />);
+</script>
+</body>
+</html>

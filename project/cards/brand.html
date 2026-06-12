@@ -1,0 +1,126 @@
+<!-- @dsCard group="Brand" viewport="860x560" name="Logo & Signature" subtitle="Zone-Stempel + Daten-Leiste" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Logo &amp; Signature</title>
+<link rel="stylesheet" href="../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="../tweaks-panel.jsx"></script>
+<style>
+body { padding: 32px; }
+.grid { display: grid; grid-template-columns: 220px 1fr; gap: 32px; align-items: start; }
+.logo-tile { display: grid; gap: 10px; }
+.logo-tile img { width: 220px; height: 220px; border-radius: 12px; border: 1.5px solid var(--line); display: block; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.sig { display: grid; gap: 24px; }
+.sig-block { display: grid; gap: 10px; border-top: 1.5px solid var(--line); padding-top: 16px; }
+.sig-block:first-child { border-top: none; padding-top: 0; }
+.sig-block p { margin: 0; font-size: 14px; color: var(--ink-muted); max-width: 480px; }
+.stamp-row { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+
+.zone-stamp {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  font-size: var(--stamp-size, 16px);
+  letter-spacing: var(--stamp-tracking, 0.06em);
+  border: var(--stamp-border-w, 2px) var(--stamp-border-style, solid) currentColor;
+  border-radius: var(--stamp-radius, 6px);
+  padding: 0.4em 0.75em;
+  transform: rotate(var(--stamp-rotate, -2deg));
+}
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="logo-tile">
+    <span class="tag">Logo · Schwarz/Weiß · Varsity-Bogen</span>
+    <img src="../assets/logo.png" alt="MuscleZone Logo">
+  </div>
+  <div class="sig">
+    <div class="sig-block">
+      <span class="tag">Signature 1 · Zone-Stempel</span>
+      <div class="stamp-row">
+        <span class="zone-stamp" style="color: var(--accent);">Bestseller</span>
+        <span class="zone-stamp" style="color: var(--ink); --stamp-rotate: 2deg;">Neu</span>
+        <span class="zone-stamp" style="color: var(--success);">Abholbereit</span>
+      </div>
+      <p>Gerade und umrandet wie ein echter Stempelabdruck — Display-Schrift in Versalien, leicht gedreht. Für Status und Aktionen im ganzen Shop.</p>
+    </div>
+    <div class="sig-block">
+      <span class="tag">Signature 2 · Daten-Leiste</span>
+      <div class="mz-strip">
+        <span>24 g Protein</span>
+        <span class="mz-strip-dot" aria-hidden="true">·</span>
+        <span>1,12 €/Portion</span>
+        <span class="mz-strip-dot" aria-hidden="true">·</span>
+        <span>Heute abholbar</span>
+      </div>
+      <p>Harte Fakten in Mono auf jeder Produktkarte: Transparenz als visuelles Markenzeichen — und gleichzeitig die Pflichtangaben (Grundpreis) elegant gelöst.</p>
+    </div>
+  </div>
+</div>
+<div id="tweaks-root"></div>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "stampSize": 13,
+  "stampBorder": 2,
+  "stampStyle": "Solide",
+  "stampCorners": "Eckig",
+  "stampRotate": 0,
+  "stampTracking": 0.03
+}/*EDITMODE-END*/;
+
+const CORNER_PX = { "Eckig": "2px", "Rund": "6px", "Pill": "999px" };
+const STYLE_CSS = { "Solide": "solid", "Doppelt": "double", "Gestrichelt": "dashed" };
+
+function TweaksApp() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    const r = document.documentElement.style;
+    r.setProperty('--stamp-size', t.stampSize + 'px');
+    r.setProperty('--stamp-border-w', t.stampBorder + 'px');
+    r.setProperty('--stamp-border-style', STYLE_CSS[t.stampStyle] || 'solid');
+    r.setProperty('--stamp-radius', CORNER_PX[t.stampCorners] || '6px');
+    r.setProperty('--stamp-rotate', t.stampRotate + 'deg');
+    r.setProperty('--stamp-tracking', t.stampTracking + 'em');
+  }, [t]);
+
+  return (
+    <TweaksPanel>
+      <TweakSection label="Zone-Stempel" />
+      <TweakSlider label="Schriftgröße" value={t.stampSize} min={12} max={26} step={1} unit="px"
+                   onChange={(v) => setTweak('stampSize', v)} />
+      <TweakSlider label="Rahmenstärke" value={t.stampBorder} min={1} max={5} step={0.5} unit="px"
+                   onChange={(v) => setTweak('stampBorder', v)} />
+      <TweakRadio  label="Linienstil" value={t.stampStyle}
+                   options={["Solide", "Doppelt", "Gestrichelt"]}
+                   onChange={(v) => setTweak('stampStyle', v)} />
+      <TweakRadio  label="Ecken" value={t.stampCorners}
+                   options={["Eckig", "Rund", "Pill"]}
+                   onChange={(v) => setTweak('stampCorners', v)} />
+      <TweakSlider label="Drehung" value={t.stampRotate} min={-6} max={6} step={1} unit="°"
+                   onChange={(v) => setTweak('stampRotate', v)} />
+      <TweakSlider label="Buchstabenabstand" value={t.stampTracking} min={0} max={0.2} step={0.01} unit="em"
+                   onChange={(v) => setTweak('stampTracking', v)} />
+    </TweaksPanel>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<TweaksApp />);
+</script>
+</body>
+</html>

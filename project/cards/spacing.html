@@ -1,0 +1,81 @@
+<!-- @dsCard group="Spacing" viewport="820x560" name="Spacing & Form" subtitle="4-px-Raster · Radii · Touch-Ziele" -->
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<title>Spacing &amp; Form</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+body { padding: 32px; }
+.section { display: grid; gap: 12px; margin-bottom: 32px; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.steps { display: grid; gap: 8px; }
+.step { display: flex; align-items: center; gap: 14px; }
+.step .bar { height: 16px; background: var(--accent); border-radius: 2px; flex: none; }
+.step .lbl { font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); }
+.radii { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+.radius-demo {
+  width: 88px;
+  height: 64px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  display: grid;
+  place-items: end center;
+  padding-bottom: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.touch { display: flex; gap: 16px; align-items: center; }
+.touch-box {
+  width: 44px;
+  height: 44px;
+  border: 1.5px dashed var(--accent);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+}
+.touch p { margin: 0; font-size: 14px; color: var(--ink-muted); max-width: 540px; }
+</style>
+</head>
+<body>
+<div class="section">
+  <span class="tag">Spacing · 4-px-Raster (space-1 … space-8)</span>
+  <div class="steps">
+    <div class="step"><span class="bar" style="width: 4px;"></span><span class="lbl">space-1 · 4</span></div>
+    <div class="step"><span class="bar" style="width: 8px;"></span><span class="lbl">space-2 · 8</span></div>
+    <div class="step"><span class="bar" style="width: 12px;"></span><span class="lbl">space-3 · 12</span></div>
+    <div class="step"><span class="bar" style="width: 16px;"></span><span class="lbl">space-4 · 16</span></div>
+    <div class="step"><span class="bar" style="width: 24px;"></span><span class="lbl">space-5 · 24</span></div>
+    <div class="step"><span class="bar" style="width: 32px;"></span><span class="lbl">space-6 · 32</span></div>
+    <div class="step"><span class="bar" style="width: 48px;"></span><span class="lbl">space-7 · 48</span></div>
+    <div class="step"><span class="bar" style="width: 64px;"></span><span class="lbl">space-8 · 64</span></div>
+  </div>
+</div>
+<div class="section">
+  <span class="tag">Radii · sm 4 · md 8 · lg 12 · pill</span>
+  <div class="radii">
+    <div class="radius-demo" style="border-radius: var(--radius-sm);">sm</div>
+    <div class="radius-demo" style="border-radius: var(--radius-md);">md</div>
+    <div class="radius-demo" style="border-radius: var(--radius-lg);">lg</div>
+    <div class="radius-demo" style="border-radius: var(--radius-pill); width: 120px; height: 44px; place-items: center; padding-bottom: 0;">pill</div>
+  </div>
+</div>
+<div class="section">
+  <span class="tag">Touch &amp; Fokus</span>
+  <div class="touch">
+    <div class="touch-box">44</div>
+    <p>Interaktive Elemente min. 44 × 44 px. Sichtbarer Fokusring in Accent (2 px, Offset 2 px). <code>prefers-reduced-motion</code> wird global respektiert.</p>
+  </div>
+</div>
+</body>
+</html>
