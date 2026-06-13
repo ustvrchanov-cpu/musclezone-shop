@@ -226,7 +226,7 @@
       </a>
       <nav class="tpl-nav">
         <sc-for list="{{ nav }}" as="item" hint-placeholder-count="5">
-          <a href="#" data-sale="{{ item.sale }}">{{ item.label }}</a>
+          <a href="{{ item.href }}" data-sale="{{ item.sale }}">{{ item.label }}</a>
         </sc-for>
       </nav>
       <div class="tpl-actions">
@@ -252,7 +252,7 @@
     <div class="tpl-drawer">
       <div class="tpl-wrap">
         <sc-for list="{{ nav }}" as="item" hint-placeholder-count="5">
-          <a href="#">{{ item.label }}</a>
+          <a href="{{ item.href }}">{{ item.label }}</a>
         </sc-for>
       </div>
     </div>
@@ -539,11 +539,11 @@ class Component extends DCLogic {
 
   renderVals() {
     const nav = [
-      { label: 'Proteine', sale: null },
-      { label: 'Creatin', sale: null },
-      { label: 'Pre-Workout', sale: null },
-      { label: 'Vitamine', sale: null },
-      { label: 'Sale', sale: 'true' },
+      { label: 'Proteine', href: '#', sale: null },
+      { label: 'Creatin', href: '#', sale: null },
+      { label: 'Pre-Workout', href: '#', sale: null },
+      { label: 'Wiki', href: '../wiki/Wiki.dc.html', sale: null },
+      { label: 'Sale', href: '#', sale: 'true' },
     ];
 
     const offers = [
